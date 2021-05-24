@@ -1,6 +1,5 @@
 # Serves-parser
-This is a test assignment for an internship at avito.ru. 
-Service that allows you to monitor the change in the number of ads in Avito for a specific search query and region
+A service that allows you to track changes in the number of ads in Avito for a specific search query.
 
 ### How to deploy a project
 
