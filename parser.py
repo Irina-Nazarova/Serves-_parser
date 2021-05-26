@@ -22,7 +22,7 @@ def get_content(html):
     for item in items:
         price = item.find('span', class_='price-root-1n2wM price-listRedesign-2OaSA')
         if price:
-            price = price.get_text()
+            price = price.get_text().replace(u'\xa0', u' ')
         else:
             price = 'Цену уточняйте'
         cats.append({
@@ -34,15 +34,17 @@ def get_content(html):
                                            'title-root-395AQ iva-item-title-1Rmmj '
                                            'title-listRedesign-3RaU2 '
                                            'title-root_maxHeight-3obWc').get('href'),
-            'price': item.find('span', class_='price-root-1n2wM price-listRedesign-2OaSA').get_text(),
+            'price': price,
+            'metro': item.find('div', class_='geo-georeferences-3or5Q '
+                                             'text-text-1PdBw text-size-s-1PUdo').get_text().replace(u'\xa0', u' '),
         })
-    print(cats)
+    return cats
 
 
 def parse():
     html = get_html(URL)
     if html.status_code == 200:
-        get_content(html.text)
+        cats = get_content(html.text)
     else:
         return 'Error'
 
