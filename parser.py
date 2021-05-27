@@ -7,10 +7,20 @@ HEADERS = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
                          '(KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36', 'accept': '*/*'}
 HOST = 'https://www.avito.ru'
 
+
 def get_html(url, params=None):
     """ Функция для получения контента с указанного url."""
     req = requests.get(url, headers=HEADERS, params=params)
     return req
+
+
+def get_pages_count(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    pagination = soup.find_all('span', class_='pagination-item-1WyVp')
+    if len(pagination[1:-1]) > 0:
+        return len(pagination[1:-1])
+    else:
+        return 1
 
 
 def get_content(html):
@@ -35,8 +45,7 @@ def get_content(html):
                                            'title-listRedesign-3RaU2 '
                                            'title-root_maxHeight-3obWc').get('href'),
             'price': price,
-            'metro': item.find('div', class_='geo-georeferences-3or5Q '
-                                             'text-text-1PdBw text-size-s-1PUdo').get_text().replace(u'\xa0', u' '),
+            'metro': item.find('div', class_='geo-root-1pUZ8 iva-item-geo-1Ocpg').get_text().replace(u'\xa0', u' '),
         })
     return cats
 
@@ -44,7 +53,14 @@ def get_content(html):
 def parse():
     html = get_html(URL)
     if html.status_code == 200:
-        cats = get_content(html.text)
+        cats = []
+        pages_count = get_pages_count(html.text)
+        for page in range(1, pages_count + 1):
+            print(f' Парсинг страницы {page} из {pages_count}...')
+            html = get_html(URL, params={'page': page})
+            cats.extend(get_content(html.text))
+        print(len(cats))
+        #cats = get_content(html.text)
     else:
         return 'Error'
 
