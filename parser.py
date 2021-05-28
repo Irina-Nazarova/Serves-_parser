@@ -53,8 +53,6 @@ def get_content(html):
 
 
 def save_file(items, path):
-    URL = input('Введите URL: ')
-    URL = URL.strip()
     with open(path, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file, delimiter =';')
         writer.writerow(['Порода', 'Ссылка', 'Цена в руб.', 'Метро'])
@@ -63,6 +61,8 @@ def save_file(items, path):
 
 
 def parse():
+    URL = input('Введите URL: ')
+    URL = URL.strip()
     html = get_html(URL)
     if html.status_code == 200:
         cats = []
