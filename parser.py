@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+import os
 
 URL = 'https://www.avito.ru/moskva/koshki/poroda-abissinskaya-ASgBAgICAUSoA_QU?cd=1'
 HEADERS = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
@@ -52,7 +53,9 @@ def get_content(html):
 
 
 def save_file(items, path):
-    with open(path, 'w', newline='') as file:
+    URL = input('Введите URL: ')
+    URL = URL.strip()
+    with open(path, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file, delimiter =';')
         writer.writerow(['Порода', 'Ссылка', 'Цена в руб.', 'Метро'])
         for item in items:
@@ -70,7 +73,7 @@ def parse():
             cats.extend(get_content(html.text))
         save_file(cats, FILE)
         print(f' Получено {len(cats)} котиков')
-        # print(cats)
+        os.startfile(FILE)
     else:
         return 'Error'
 
