@@ -1,11 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
-
+import csv
 
 URL = 'https://www.avito.ru/moskva/koshki/poroda-abissinskaya-ASgBAgICAUSoA_QU?cd=1'
 HEADERS = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                          '(KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36', 'accept': '*/*'}
 HOST = 'https://www.avito.ru'
+FILE = 'cats.csv'
 
 
 def get_html(url, params=None):
@@ -50,6 +51,14 @@ def get_content(html):
     return cats
 
 
+def save_file(items, path):
+    with open(path, 'w', newline='') as file:
+        writer = csv.writer(file, delimiter =';')
+        writer.writerow(['Порода', 'Ссылка', 'Цена в руб.', 'Метро'])
+        for item in items:
+            writer.writerow([item['title'], item['link'], item['price'], item['metro']])
+
+
 def parse():
     html = get_html(URL)
     if html.status_code == 200:
@@ -59,8 +68,9 @@ def parse():
             print(f' Парсинг страницы {page} из {pages_count}...')
             html = get_html(URL, params={'page': page})
             cats.extend(get_content(html.text))
-        print(len(cats))
-        #cats = get_content(html.text)
+        save_file(cats, FILE)
+        print(f' Получено {len(cats)} котиков')
+        # print(cats)
     else:
         return 'Error'
 
