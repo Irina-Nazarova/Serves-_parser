@@ -14,7 +14,7 @@ FILE = "cats.csv"
 
 
 def get_html(url, params=None):
-    """Функция для получения контента с указанного url."""
+    """Функция для получения контэнта с указанного url."""
     req = requests.get(url, headers=HEADERS, params=params)
     return req
 
